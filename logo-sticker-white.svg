@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="80" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background for inverted version -->
+  <rect x="2" y="2" width="196" height="76" rx="16" fill="white" stroke="#0B6EFF" stroke-width="2"/>
+  
+  <!-- VR Headset Icon -->
+  <g transform="translate(16, 20)">
+    <!-- Headset body -->
+    <rect x="8" y="12" width="24" height="16" rx="8" fill="#0B6EFF"/>
+    <!-- Left lens -->
+    <circle cx="14" cy="20" r="6" fill="white" stroke="#00C28A" stroke-width="1"/>
+    <!-- Right lens -->
+    <circle cx="26" cy="20" r="6" fill="white" stroke="#00C28A" stroke-width="1"/>
+    <!-- Head strap -->
+    <path d="M8 20 Q4 16 4 20 Q4 24 8 20" fill="#0B6EFF"/>
+    <path d="M32 20 Q36 16 36 20 Q36 24 32 20" fill="#0B6EFF"/>
+  </g>
+  
+  <!-- Speech bubble -->
+  <g transform="translate(52, 24)">
+    <ellipse cx="12" cy="8" rx="12" ry="8" fill="#00C28A"/>
+    <path d="M4 12 L8 16 L12 12" fill="#00C28A"/>
+    <text x="12" y="12" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="8" font-weight="600">EN</text>
+  </g>
+  
+  <!-- VReal English Text -->
+  <text x="80" y="32" fill="#0B6EFF" font-family="Inter, sans-serif" font-size="14" font-weight="700">VReal</text>
+  <text x="80" y="48" fill="#00C28A" font-family="Inter, sans-serif" font-size="14" font-weight="600">English</text>
+  
+  <!-- Tagline -->
+  <text x="80" y="62" fill="#9aa6b2" font-family="Inter, sans-serif" font-size="8">Virtual Reality Learning</text>
+</svg>
