@@ -496,7 +496,7 @@ export class LessonDetailComponent implements OnInit, OnDestroy {
             break;
         }
         this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-          `/${videoFileName}`
+          `${videoFileName}`
         );
       } else {
         // Use YouTube embed

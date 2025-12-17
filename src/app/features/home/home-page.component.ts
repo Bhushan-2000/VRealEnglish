@@ -131,7 +131,7 @@ export class HomePageComponent implements OnInit {
         duration: '12 weeks',
         students: 15420,
         rating: 4.8,
-        image: '/brand/course-business.jpg',
+        image: 'brand/course-business.jpg',
         description: 'Master professional communication for meetings, presentations, and negotiations.'
       },
       {
@@ -141,7 +141,7 @@ export class HomePageComponent implements OnInit {
         duration: '8 weeks',
         students: 28350,
         rating: 4.9,
-        image: '/brand/course-conversation.jpg',
+        image: 'brand/course-conversation.jpg',
         description: 'Build confidence in daily English conversations and social interactions.'
       },
       {
@@ -151,7 +151,7 @@ export class HomePageComponent implements OnInit {
         duration: '16 weeks',
         students: 12680,
         rating: 4.7,
-        image: '/brand/course-ielts.jpg',
+        image: 'brand/course-ielts.jpg',
         description: 'Comprehensive preparation for all four IELTS modules with expert strategies.'
       }
     ];
@@ -172,7 +172,7 @@ export class HomePageComponent implements OnInit {
         name: 'Sarah Johnson',
         role: 'Marketing Manager',
         company: 'Tech Corp',
-        image: '/avatars/user1.jpg',
+        image: 'avatars/user1.jpg',
         rating: 5,
         text: 'VReal English transformed my business communication skills. The 360° VR scenarios made me feel like I was actually in real meetings. Highly recommended!'
       },
@@ -180,7 +180,7 @@ export class HomePageComponent implements OnInit {
         name: 'Miguel Rodriguez',
         role: 'Software Engineer',
         company: 'Innovation Labs',
-        image: '/avatars/user2.jpg',
+        image: 'avatars/user2.jpg',
         rating: 5,
         text: 'The AI coach is incredible! It helped me improve my pronunciation and gave me instant feedback. I passed my IELTS with band 8 thanks to VReal English.'
       },
@@ -188,7 +188,7 @@ export class HomePageComponent implements OnInit {
         name: 'Yuki Tanaka',
         role: 'Student',
         company: 'University of Tokyo',
-        image: '/avatars/user3.jpg',
+        image: 'avatars/user3.jpg',
         rating: 5,
         text: 'Learning English has never been this fun! The gamification keeps me motivated, and the live classes with native speakers boosted my confidence tremendously.'
       }
