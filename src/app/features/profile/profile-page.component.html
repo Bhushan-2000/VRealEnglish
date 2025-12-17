@@ -1,15 +1,158 @@
-<div class="profile-container container">
-  <button class="back-btn" (click)="goBack()">
-    <span class="back-icon">←</span> Back to Home
-  </button>
-  <h1>My Profile</h1>
-  <div class="profile-card">
-    <div class="avatar">👤</div>
-    <h2>John Doe</h2>
-    <p>john@example.com</p>
+<div class="profile-container">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="header-bg"></div>
+    <div class="container">
+      <button class="back-btn" (click)="goBack()">
+        <span class="back-icon">←</span> Back
+      </button>
+      <div class="profile-top">
+        <div class="avatar-section">
+          <div class="avatar">
+            <span class="avatar-text">{{ user.name.charAt(0) }}</span>
+          </div>
+          <div class="level-badge" [style.background]="getLevelColor()">
+            {{ user.level }}
+          </div>
+        </div>
+        <div class="profile-info">
+          <h1 class="profile-name">{{ user.name }}</h1>
+          <p class="member-since">Member since {{ memberSince }}</p>
+          <button class="edit-btn" (click)="editProfile()">
+            <span>✏️</span> Edit Profile
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="enrolled-courses">
-    <h3>Enrolled Courses</h3>
-    <div class="course">Business English Mastery</div>
+
+  <div class="container profile-content">
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-value">{{ practiceHours }}h {{ practiceMinutes }}m</div>
+        <div class="stat-label">Total Practice</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value">{{ user.currentStreak }}</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value">{{ user.coursesCompleted }}</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">{{ user.creditsBalance }}</div>
+        <div class="stat-label">Credits</div>
+      </div>
+    </div>
+
+    <!-- Personal Information -->
+    <div class="section-card">
+      <h2 class="section-title">
+        <span class="title-icon">👤</span>
+        Personal Information
+      </h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Email</label>
+          <p>{{ user.email }}</p>
+        </div>
+        <div class="info-item">
+          <label>Phone</label>
+          <p>{{ user.phone }}</p>
+        </div>
+        <div class="info-item">
+          <label>Address</label>
+          <p>{{ user.address }}</p>
+        </div>
+        <div class="info-item">
+          <label>City</label>
+          <p>{{ user.city }}</p>
+        </div>
+        <div class="info-item">
+          <label>State</label>
+          <p>{{ user.state }}</p>
+        </div>
+        <div class="info-item">
+          <label>Pincode</label>
+          <p>{{ user.pincode }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning Progress -->
+    <div class="section-card">
+      <h2 class="section-title">
+        <span class="title-icon">📊</span>
+        Learning Progress
+      </h2>
+      <div class="progress-section">
+        <div class="progress-header">
+          <span class="progress-label">Current Level: <strong>{{ user.level }}</strong></span>
+          <span class="progress-percent">{{ getLevelProgress() }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getLevelProgress()" [style.background]="getLevelColor()"></div>
+        </div>
+        <div class="progress-stats">
+          <div class="progress-stat">
+            <span class="stat-number">{{ user.longestStreak }}</span>
+            <span class="stat-text">Longest Streak</span>
+          </div>
+          <div class="progress-stat">
+            <span class="stat-number">{{ (user.totalPracticeTime / user.coursesCompleted) | number:'1.0-0' }}</span>
+            <span class="stat-text">Avg Minutes/Course</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Achievements -->
+    <div class="section-card">
+      <h2 class="section-title">
+        <span class="title-icon">🏆</span>
+        Achievements
+      </h2>
+      <div class="achievements-grid">
+        <div class="achievement-card" *ngFor="let achievement of user.achievements">
+          <div class="achievement-icon">{{ achievement.icon }}</div>
+          <div class="achievement-content">
+            <h3 class="achievement-title">{{ achievement.title }}</h3>
+            <p class="achievement-desc">{{ achievement.description }}</p>
+            <span class="achievement-date">{{ achievement.date | date:'MMM d, y' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="section-card">
+      <h2 class="section-title">
+        <span class="title-icon">📅</span>
+        Recent Activity
+      </h2>
+      <div class="activity-list">
+        <div class="activity-item" *ngFor="let activity of user.recentActivity">
+          <div class="activity-icon-wrapper">
+            <span class="activity-type-icon">
+              {{ activity.type === 'Practice' ? '📖' : activity.type === 'Live Session' ? '🎥' : activity.type === 'Achievement' ? '🏆' : '🥽' }}
+            </span>
+          </div>
+          <div class="activity-content">
+            <h4 class="activity-type">{{ activity.type }}</h4>
+            <p class="activity-desc">{{ activity.description }}</p>
+            <div class="activity-footer">
+              <span class="activity-date">{{ activity.date | date:'MMM d, y' }}</span>
+              <span class="activity-duration" *ngIf="activity.duration">{{ activity.duration }} mins</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

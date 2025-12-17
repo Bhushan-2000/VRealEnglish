@@ -4,12 +4,8 @@
       <img src="vreal-logo-digitized.png" alt="VReal English Logo" loading="eager" />
     </a>
 
-
-    <button class="hamburger" (click)="toggleMobileMenu()" aria-label="Toggle navigation menu" aria-expanded="{{mobileMenuOpen}}">
-      <span></span><span></span><span></span>
-    </button>
-
-    <ul class="nav-links" [class.open]="mobileMenuOpen">
+    <!-- Desktop Navigation -->
+    <ul class="nav-links desktop-nav">
       <li *ngFor="let link of links" 
           [class.admin]="link.adminOnly" 
           [class.hidden]="link.adminOnly && !auth.isAdmin()"
@@ -53,10 +49,23 @@
       </li>
       <li class="theme-toggle">
         <button (click)="toggleTheme()" aria-label="Toggle dark / light mode" [attr.data-theme]="theme">
-          <span *ngIf="theme==='dark'">🌙 Dark</span>
-          <span *ngIf="theme==='light'">☀️ Light</span>
+          <span *ngIf="theme==='dark'">🌙</span>
+          <span *ngIf="theme==='light'">☀️</span>
         </button>
       </li>
     </ul>
   </div>
+</nav>
+
+<!-- Mobile Bottom Navigation -->
+<nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile navigation">
+  <a *ngFor="let link of mobileLinks" 
+     [href]="link.route" 
+     (click)="navigate(link, $event)"
+     class="nav-item"
+     [class.active]="isActiveRoute(link.route)"
+     [attr.aria-label]="link.label">
+    <span class="icon">{{link.icon}}</span>
+    <span class="label">{{link.label}}</span>
+  </a>
 </nav>

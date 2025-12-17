@@ -9,6 +9,7 @@ interface NavLink {
   fragment?: string;
   adminOnly?: boolean;
   sublinks?: NavSublink[];
+  icon?: string;
 }
 
 interface NavSublink {
@@ -40,6 +41,14 @@ export class NavbarComponent {
     { label: 'Admin', route: '/admin', adminOnly: true }
   ];
 
+  mobileLinks: NavLink[] = [
+    { label: 'Home', route: '/', icon: '🏠' },
+    { label: 'Learning', route: '/learning', icon: '🎓' },
+    { label: 'Community', route: '/community', icon: '👥' },
+    { label: 'Wallet', route: '/wallet', icon: '💰' },
+    { label: 'Profile', route: '/profile', icon: '👤' }
+  ];
+
   mobileMenuOpen = false;
   scrolled = false;
   openDropdown: string | null = null;
@@ -50,12 +59,23 @@ export class NavbarComponent {
     this.themeService.themeChanges().subscribe(t => this.theme = t);
   }
 
+  isActiveRoute(route: string): boolean {
+    return this.router.url === route || this.router.url.startsWith(route + '/');
+  }
+
   @HostListener('window:scroll') onScroll() {
     this.scrolled = window.scrollY > 10;
   }
 
   toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
+    
+    // Prevent body scroll when mobile menu is open
+    if (this.mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
   }
 
   navigate(link: NavLink, event: Event): void {
@@ -71,6 +91,7 @@ export class NavbarComponent {
     // Close mobile menu first
     if (this.mobileMenuOpen) {
       this.mobileMenuOpen = false;
+      document.body.style.overflow = '';
     }
 
     if (currentUrl === targetUrl) {
@@ -132,6 +153,7 @@ export class NavbarComponent {
     
     this.openDropdown = null;
     if (this.mobileMenuOpen) {
+      document.body.style.overflow = '';
       this.mobileMenuOpen = false;
     }
   }
