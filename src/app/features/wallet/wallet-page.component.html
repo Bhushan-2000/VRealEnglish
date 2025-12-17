@@ -1,0 +1,493 @@
+<div class="wallet-container">
+  <div class="container">
+    <button class="back-btn" (click)="goBack()">
+      <span class="back-icon">←</span> Back to Home
+    </button>
+    <!-- Page Header -->
+    <div class="wallet-header">
+      <h1>💰 Speak & Earn Wallet</h1>
+      <p class="wallet-subtitle">Practice speaking, earn rewards, and track your progress</p>
+    </div>
+
+    <!-- Quick Stats Overview -->
+    <div class="stats-grid">
+      <div class="stat-card stat-earnings">
+        <div class="stat-icon">💵</div>
+        <div class="stat-content">
+          <div class="stat-value">₹{{ totalEarnings.toFixed(2) }}</div>
+          <div class="stat-label">Total Earnings</div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-time">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ formatTime(totalVerifiedTime) }}</div>
+          <div class="stat-label">Verified Speaking Time</div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-balance" *ngIf="wallet$ | async as wallet">
+        <div class="stat-icon">💳</div>
+        <div class="stat-content">
+          <div class="stat-value">₹{{ wallet.balance.toFixed(2) }}</div>
+          <div class="stat-label">Wallet Balance</div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-rate">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ verificationRate.toFixed(1) }}%</div>
+          <div class="stat-label">AI Verification Rate</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subscription Status -->
+    <div class="subscription-card" [class.active]="subscription.active">
+      <div class="subscription-header">
+        <div class="subscription-info">
+          <h2>🎤 {{ subscription.plan }}</h2>
+          <div class="subscription-meta">
+            <span class="badge" [class.badge-active]="subscription.active" [class.badge-expired]="!subscription.active">
+              {{ subscription.active ? 'Active' : 'Expired' }}
+            </span>
+            <span class="subscription-amount">₹{{ subscription.amount }}/month</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" (click)="renewSubscription()" *ngIf="subscription.daysRemaining <= 3">
+          Renew Subscription
+        </button>
+      </div>
+
+      <div class="subscription-details">
+        <div class="detail-item">
+          <span class="detail-label">Start Date:</span>
+          <span class="detail-value">{{ subscription.startDate }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">End Date:</span>
+          <span class="detail-value">{{ subscription.endDate }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Days Remaining:</span>
+          <span class="detail-value" [class.text-warning]="subscription.daysRemaining <= 5">{{ subscription.daysRemaining }} days</span>
+        </div>
+      </div>
+
+      <div class="subscription-features">
+        <h3>Your Benefits</h3>
+        <ul>
+          <li>✅ Unlimited random 1-on-1 calls with verified speakers</li>
+          <li>✅ Create & join group calls (up to 10 participants)</li>
+          <li>✅ AI-powered voice verification & authenticity check</li>
+          <li>✅ Earn ₹{{ (earningsPerMinute * 60).toFixed(2) }}/hour for verified speaking time</li>
+          <li>✅ Real-time progress tracking & analytics</li>
+          <li>✅ Automatic earnings credit to wallet</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Progress Tracking -->
+    <div class="progress-section">
+      <div class="section-header">
+        <h2>📊 Monthly Progress</h2>
+        <p class="section-subtitle">Target: 2 hours daily practice for 30 days</p>
+      </div>
+
+      <div class="progress-cards">
+        <div class="progress-card">
+          <div class="progress-header">
+            <h3>Overall Progress</h3>
+            <span class="progress-percentage">{{ progressPercentage.toFixed(1) }}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+          </div>
+          <div class="progress-stats">
+            <span>{{ formatTime(totalVerifiedTime) }} / {{ formatTime(monthlyTarget) }}</span>
+          </div>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-header">
+            <h3>Today's Practice</h3>
+            <span class="progress-percentage">{{ ((todayPracticeTime / 7200) * 100).toFixed(1) }}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="(todayPracticeTime / 7200) * 100"></div>
+          </div>
+          <div class="progress-stats">
+            <span>{{ formatTime(todayPracticeTime) }} / 2 hours</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="earnings-info">
+        <div class="earnings-card">
+          <h3>💰 Pending Payout</h3>
+          <div class="earnings-amount">₹{{ pendingPayout.toFixed(2) }}</div>
+          <p class="earnings-note">Based on {{ formatTimeDetailed(totalVerifiedTime) }} of verified speaking</p>
+          <button class="btn btn-primary btn-large" (click)="claimEarnings()" [disabled]="pendingPayout === 0">
+            {{ pendingPayout > 0 ? 'Claim Earnings' : 'No Earnings to Claim' }}
+          </button>
+        </div>
+
+        <div class="earnings-breakdown">
+          <h4>Earnings Calculation</h4>
+          <div class="breakdown-item">
+            <span>Subscription Cost:</span>
+            <span>₹699</span>
+          </div>
+          <div class="breakdown-item">
+            <span>Monthly Target:</span>
+            <span>60 hours (2h × 30 days)</span>
+          </div>
+          <div class="breakdown-item">
+            <span>Earning Rate:</span>
+            <span>₹{{ (earningsPerMinute * 60).toFixed(2) }}/hour</span>
+          </div>
+          <div class="breakdown-item">
+            <span>Per Minute:</span>
+            <span>₹{{ earningsPerMinute.toFixed(4) }}</span>
+          </div>
+          <div class="breakdown-total">
+            <span>Your Verified Time:</span>
+            <span>{{ formatTimeDetailed(totalVerifiedTime) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Sessions History -->
+    <div class="sessions-section">
+      <div class="section-header">
+        <h2>🎯 Practice Sessions History</h2>
+        <button class="btn btn-primary" (click)="startPracticeSession()">
+          Start New Session
+        </button>
+      </div>
+
+      <div class="sessions-list">
+        <div class="session-card" *ngFor="let session of practiceSessions">
+          <div class="session-header">
+            <div class="session-type">
+              <span class="type-badge" [class.type-random]="session.type === 'random-call'" [class.type-group]="session.type === 'group-call'">
+                {{ getSessionTypeLabel(session.type) }}
+              </span>
+              <span class="session-participants" *ngIf="session.type === 'group-call'">
+                👥 {{ session.participants }} participants
+              </span>
+            </div>
+            <div class="session-earnings">+₹{{ session.earnings.toFixed(2) }}</div>
+          </div>
+
+          <div class="session-details">
+            <div class="session-date">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+              {{ session.date }}
+            </div>
+          </div>
+
+          <div class="session-stats">
+            <div class="stat-item">
+              <span class="stat-label">Total Duration:</span>
+              <span class="stat-value">{{ formatTime(session.duration) }}</span>
+            </div>
+            <div class="stat-item verified">
+              <span class="stat-label">AI Verified:</span>
+              <span class="stat-value">{{ formatTime(session.verifiedDuration) }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Verification Rate:</span>
+              <span class="stat-value">{{ getVerificationPercentage(session).toFixed(1) }}%</span>
+            </div>
+          </div>
+
+          <div class="verification-bar">
+            <div class="verification-fill" [style.width.%]="getVerificationPercentage(session)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="how-it-works">
+      <h2>🤖 How AI Verification Works</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-icon">🎤</div>
+          <h3>Real Voice Detection</h3>
+          <p>AI identifies and verifies genuine human voice patterns</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">⏸️</div>
+          <h3>Pause Filtering</h3>
+          <p>Automatically removes silence, long pauses, and dead air</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">🚫</div>
+          <h3>Fake Prevention</h3>
+          <p>Detects and filters out recorded audio, playback, and fake voices</p>
+        </div>
+        <div class="info-card">
+          <div class="info-icon">📊</div>
+          <h3>Quality Analysis</h3>
+          <p>Measures speech clarity, fluency, and engagement level</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wallet Transactions -->
+    <div class="transactions-section" *ngIf="wallet$ | async as wallet">
+      <h2>💳 Recent Transactions</h2>
+      <div class="transactions-list">
+        <div class="transaction-item" *ngFor="let tx of wallet.transactions" [class.credit]="tx.type === 'credit'" [class.debit]="tx.type === 'debit'">
+          <div class="transaction-icon">
+            {{ tx.type === 'credit' ? '↓' : '↑' }}
+          </div>
+          <div class="transaction-details">
+            <div class="transaction-desc">{{ tx.description }}</div>
+            <div class="transaction-date">{{ tx.date | date:'medium' }}</div>
+          </div>
+          <div class="transaction-amount" [class.positive]="tx.type === 'credit'" [class.negative]="tx.type === 'debit'">
+            {{ tx.type === 'credit' ? '+' : '-' }}₹{{ tx.amount.toFixed(2) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How to Use Your Wallet -->
+    <div class="wallet-usage-section">
+      <h2>💰 How to Use Your Wallet Balance</h2>
+      <p class="usage-intro">Your earned wallet balance can be used in two flexible ways:</p>
+      
+      <div class="usage-options">
+        <div class="usage-card">
+          <div class="usage-icon">🎁</div>
+          <h3>Create Partner Brand Coupons</h3>
+          <p>Convert 100% of your wallet balance into custom coupons for our partner brands. Set any amount up to the brand's limit and redeem on their platforms.</p>
+          <div class="partner-features">
+            <span class="feature-badge">✓ Flexible Amount</span>
+            <span class="feature-badge">✓ Multiple Partners</span>
+            <span class="feature-badge">✓ Instant Generation</span>
+          </div>
+        </div>
+        
+        <div class="usage-card">
+          <div class="usage-icon">🔄</div>
+          <h3>Next Month Subscription</h3>
+          <p>Use up to 50% of your current wallet balance to offset your next month's subscription fee. Save money while continuing your learning journey.</p>
+          <div class="partner-features">
+            <span class="feature-badge">✓ Up to 50% Balance</span>
+            <span class="feature-badge">✓ Auto Applied</span>
+            <span class="feature-badge">✓ Recurring Benefit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Partner Brands Section -->
+    <div class="partner-brands-section">
+      <h2>🤝 Create Partner Brand Coupons</h2>
+      <p class="partner-subtitle">Choose from our verified partner brands and create custom coupons with your wallet balance</p>
+      
+      <div class="partners-grid">
+        <div class="partner-card">
+          <div class="partner-logo">
+            <div class="logo-placeholder" style="background: linear-gradient(135deg, #FC8019 0%, #FF6B35 100%);">
+              <span style="font-size: 2rem; font-weight: bold; color: white;">S</span>
+            </div>
+          </div>
+          <h3>Swiggy</h3>
+          <div class="partner-limit">
+            <span class="limit-label">Coupon Limit:</span>
+            <span class="limit-value">₹30 - ₹60</span>
+          </div>
+          <p class="partner-desc">Food delivery & dining coupons</p>
+          <button class="btn btn-outline btn-block" (click)="openCouponModal('swiggy', 30, 60)">Create Coupon</button>
+        </div>
+
+        <div class="partner-card">
+          <div class="partner-logo">
+            <div class="logo-placeholder" style="background: linear-gradient(135deg, #E23744 0%, #CB202D 100%);">
+              <span style="font-size: 2rem; font-weight: bold; color: white;">Z</span>
+            </div>
+          </div>
+          <h3>Zomato</h3>
+          <div class="partner-limit">
+            <span class="limit-label">Coupon Limit:</span>
+            <span class="limit-value">₹40 - ₹60</span>
+          </div>
+          <p class="partner-desc">Restaurant & food coupons</p>
+          <button class="btn btn-outline btn-block" (click)="openCouponModal('zomato', 40, 60)">Create Coupon</button>
+        </div>
+
+        <div class="partner-card">
+          <div class="partner-logo">
+            <div class="logo-placeholder" style="background: linear-gradient(135deg, #00BAF2 0%, #0B6EFF 100%);">
+              <span style="font-size: 2rem; font-weight: bold; color: white;">P</span>
+            </div>
+          </div>
+          <h3>Paytm</h3>
+          <div class="partner-limit">
+            <span class="limit-label">Coupon Limit:</span>
+            <span class="limit-value">₹50 - ₹100</span>
+          </div>
+          <p class="partner-desc">Wallet & payment coupons</p>
+          <button class="btn btn-outline btn-block" (click)="openCouponModal('paytm', 50, 100)">Create Coupon</button>
+        </div>
+      </div>
+
+      <div class="partner-note">
+        <div class="note-icon">ℹ️</div>
+        <div class="note-content">
+          <strong>How Custom Coupons Work:</strong>
+          <p>Select a partner brand, choose any amount within their set limit (or below), and create your custom coupon instantly. You have full control over the coupon value. Once created, use the coupon code directly on the partner's website or app.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wallet Rules -->
+    <div class="wallet-rules">
+      <h3>📋 Wallet Rules & Guidelines</h3>
+      <ul>
+        <li>💡 Money earned through speaking practice is automatically credited to your wallet</li>
+        <li>🔒 Wallet funds are NON-WITHDRAWABLE but can be used for partner coupons or subscriptions</li>
+        <li>🎁 Use 100% of balance to create custom coupons for partner brands (within brand limits)</li>
+        <li>🔄 Use up to 50% of balance for next month's subscription payment</li>
+        <li>✅ AI verifies only genuine speaking time (excludes pauses, silence, fake audio)</li>
+        <li>🎯 Earn ₹{{ (earningsPerMinute * 60).toFixed(2) }} per hour of verified speaking</li>
+        <li>📅 Complete 2 hours daily for 30 days to earn back your full subscription cost</li>
+        <li>🤝 Join random calls or create group sessions (up to 10 users)</li>
+        <li>⚡ Earnings are processed in real-time and updated immediately</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Create Coupon Modal -->
+<div class="modal-overlay" *ngIf="showCouponModal()" (click)="closeCouponModal()">
+  <div class="modal-content coupon-modal" (click)="$event.stopPropagation()" *ngIf="selectedBrand() as brand">
+    <div class="modal-header">
+      <h2>Create {{ brand.name | titlecase }} Coupon</h2>
+      <button class="modal-close-btn" (click)="closeCouponModal()">✕</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="brand-info-banner" [ngClass]="'brand-' + brand.name">
+        <div class="brand-icon">{{ brand.name.charAt(0).toUpperCase() }}</div>
+        <div>
+          <h3>{{ brand.name | titlecase }}</h3>
+          <p>Allowed Range: ₹{{ brand.min }} - ₹{{ brand.max }}</p>
+        </div>
+      </div>
+
+      <div class="balance-info" *ngIf="wallet$ | async as wallet">
+        <div class="balance-item">
+          <span class="balance-label">Your Wallet Balance:</span>
+          <span class="balance-value">₹{{ wallet.balance.toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="couponAmount">Enter Coupon Amount</label>
+        <div class="input-with-currency">
+          <span class="currency-symbol">₹</span>
+          <input 
+            type="number" 
+            id="couponAmount"
+            class="coupon-amount-input"
+            [(ngModel)]="couponAmount"
+            [min]="brand.min"
+            [max]="brand.max"
+            placeholder="Enter amount">
+        </div>
+        <div class="input-hint">
+          Min: ₹{{ brand.min }} | Max: ₹{{ brand.max }}
+        </div>
+      </div>
+
+      <div class="amount-presets">
+        <button 
+          class="preset-btn"
+          (click)="couponAmount.set(brand.min)"
+          [class.active]="couponAmount() === brand.min">
+          ₹{{ brand.min }}
+        </button>
+        <button 
+          class="preset-btn"
+          (click)="couponAmount.set((brand.min + brand.max) / 2)"
+          [class.active]="couponAmount() === (brand.min + brand.max) / 2">
+          ₹{{ (brand.min + brand.max) / 2 }}
+        </button>
+        <button 
+          class="preset-btn"
+          (click)="couponAmount.set(brand.max)"
+          [class.active]="couponAmount() === brand.max">
+          ₹{{ brand.max }}
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeCouponModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="createCoupon()">
+        Create Coupon →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Coupon Success Modal -->
+<div class="modal-overlay" *ngIf="showCouponResultModal()" (click)="closeCouponResultModal()">
+  <div class="modal-content coupon-result-modal" (click)="$event.stopPropagation()" *ngIf="generatedCoupon() as coupon">
+    <div class="success-header">
+      <div class="success-icon">✓</div>
+      <h2>Coupon Created Successfully!</h2>
+    </div>
+    
+    <div class="modal-body">
+      <div class="coupon-details">
+        <div class="coupon-brand">
+          <span class="label">Brand:</span>
+          <span class="value">{{ coupon.brand | titlecase }}</span>
+        </div>
+        <div class="coupon-amount-display">
+          <span class="label">Amount:</span>
+          <span class="value">₹{{ coupon.amount.toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <div class="coupon-code-section">
+        <p class="code-label">Your Coupon Code:</p>
+        <div class="coupon-code-box">
+          <code class="coupon-code">{{ coupon.code }}</code>
+          <button class="copy-btn" (click)="copyCouponCode()" title="Copy code">
+            📋 Copy
+          </button>
+        </div>
+      </div>
+
+      <div class="usage-instructions">
+        <h4>How to Use:</h4>
+        <ol>
+          <li>Copy the coupon code above</li>
+          <li>Visit {{ coupon.brand }}'s website or open their app</li>
+          <li>Go to checkout or payment section</li>
+          <li>Enter the coupon code to get ₹{{ coupon.amount.toFixed(2) }} discount</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary btn-block" (click)="closeCouponResultModal()">
+        Done
+      </button>
+    </div>
+  </div>
+</div>

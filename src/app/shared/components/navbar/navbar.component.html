@@ -1,0 +1,62 @@
+<nav class="navbar" [class.scrolled]="scrolled" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner container">
+    <a class="logo" routerLink="/" aria-label="VReal English Home">
+      <img src="/vreal-logo-digitized.png" alt="VReal English Logo" loading="eager" />
+    </a>
+
+
+    <button class="hamburger" (click)="toggleMobileMenu()" aria-label="Toggle navigation menu" aria-expanded="{{mobileMenuOpen}}">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="nav-links" [class.open]="mobileMenuOpen">
+      <li *ngFor="let link of links" 
+          [class.admin]="link.adminOnly" 
+          [class.hidden]="link.adminOnly && !auth.isAdmin()"
+          [class.dropdown]="link.sublinks">
+        <ng-container *ngIf="!link.adminOnly || auth.isAdmin()">
+          <!-- Dropdown link -->
+          <a *ngIf="link.sublinks" 
+             href="javascript:void(0)" 
+             (click)="toggleDropdown(link.label, $event)"
+             [attr.aria-label]="link.label"
+             [class.active]="openDropdown === link.label"
+             tabindex="0">
+            {{ link.label }}
+            <svg class="dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <!-- Regular link -->
+          <a *ngIf="!link.sublinks" 
+             href="{{link.route}}" 
+             (click)="navigate(link, $event)" 
+             [attr.aria-label]="link.label" 
+             tabindex="0">
+            {{ link.label }}
+          </a>
+          <!-- Dropdown menu -->
+          <ul *ngIf="link.sublinks && openDropdown === link.label" class="dropdown-menu">
+            <li *ngFor="let sublink of link.sublinks">
+              <a href="{{sublink.route}}" 
+                 (click)="navigateToSublink(sublink, $event)"
+                 [attr.aria-label]="sublink.label"
+                 tabindex="0">
+                {{ sublink.label }}
+              </a>
+            </li>
+          </ul>
+        </ng-container>
+      </li>
+      <li *ngIf="auth.isAuthenticated()" class="profile">
+        <button class="avatar" (click)="logout()" aria-label="Logout">Logout</button>
+      </li>
+      <li class="theme-toggle">
+        <button (click)="toggleTheme()" aria-label="Toggle dark / light mode" [attr.data-theme]="theme">
+          <span *ngIf="theme==='dark'">🌙 Dark</span>
+          <span *ngIf="theme==='light'">☀️ Light</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
