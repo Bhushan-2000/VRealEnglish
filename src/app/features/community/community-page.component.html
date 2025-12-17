@@ -1,0 +1,487 @@
+<div class="community-container">
+  <div class="container">
+    <button class="back-btn" (click)="goBack()">
+      <span class="back-icon">←</span> Back to Home
+    </button>
+    <div class="page-header">
+      <h1>Community Hub</h1>
+      <p class="page-subtitle">Connect with Real English Speakers Worldwide</p>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === '1on1'"
+        (click)="activeTab = '1on1'">
+        <span class="tab-icon">👥</span>
+        1:1 Practice Rooms
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'group'"
+        (click)="activeTab = 'group'">
+        <span class="tab-icon">🎙️</span>
+        Group Discussions
+      </button>
+    </div>
+
+    <!-- 1:1 Practice Rooms Section -->
+    <div class="section-content" *ngIf="activeTab === '1on1'">
+      <div class="section-header">
+        <h2>1:1 Speaking Practice</h2>
+        <p>Connect instantly with English speakers around the world</p>
+      </div>
+
+      <!-- Live Members Counter -->
+      <div class="live-counter">
+        <span class="live-indicator"></span>
+        <strong>{{ liveMembers }}</strong> members available now
+      </div>
+
+      <!-- Filter Options -->
+      <div class="filter-section">
+        <div class="filter-group">
+          <label>Gender Preference</label>
+          <div class="filter-buttons">
+            <button 
+              class="filter-btn"
+              [class.active]="genderFilter === 'any'"
+              [disabled]="isInCall"
+              (click)="genderFilter = 'any'; updateLiveMemberCount()">
+              Any
+            </button>
+            <button 
+              class="filter-btn"
+              [class.active]="genderFilter === 'male'"
+              [disabled]="isInCall"
+              (click)="genderFilter = 'male'; updateLiveMemberCount()">
+              Male
+            </button>
+            <button 
+              class="filter-btn"
+              [class.active]="genderFilter === 'female'"
+              [disabled]="isInCall"
+              (click)="genderFilter = 'female'; updateLiveMemberCount()">
+              Female
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>Speaking Level</label>
+          <div class="filter-buttons">
+            <button 
+              class="filter-btn"
+              [class.active]="levelFilter === 'basic'"
+              [disabled]="isInCall"
+              (click)="levelFilter = 'basic'; updateLiveMemberCount()">
+              Basic
+            </button>
+            <button 
+              class="filter-btn"
+              [class.active]="levelFilter === 'intermediate'"
+              [disabled]="isInCall"
+              (click)="levelFilter = 'intermediate'; updateLiveMemberCount()">
+              Intermediate
+            </button>
+            <button 
+              class="filter-btn"
+              [class.active]="levelFilter === 'advanced'"
+              [disabled]="isInCall"
+              (click)="levelFilter = 'advanced'; updateLiveMemberCount()">
+              Advanced
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Call Action -->
+      <div class="call-action-section" *ngIf="!isInCall">
+        <button class="call-now-btn" (click)="startCall()">
+          <span class="call-icon">📞</span>
+          Call Now
+        </button>
+        <p class="call-info">You'll be matched with a partner in seconds</p>
+      </div>
+
+      <!-- Active Call Interface -->
+      <div class="active-call" *ngIf="isInCall">
+        <!-- Connecting State -->
+        <div class="connecting-state" *ngIf="callState === 'connecting'">
+          <div class="spinner"></div>
+          <h3>Connecting to partner...</h3>
+          <p>Finding the perfect match for you</p>
+        </div>
+
+        <!-- Connected State -->
+        <div class="connected-state" *ngIf="callState === 'connected'">
+          <div class="call-header">
+            <div class="call-timer">
+              <span class="timer-icon">⏱️</span>
+              <span class="timer-text">{{ formatTime(callDuration) }}</span>
+            </div>
+            <button class="end-call-btn" (click)="endCall()">
+              <span>End Call</span>
+            </button>
+          </div>
+
+          <div class="participants">
+            <div class="participant me">
+              <div class="participant-avatar">
+                <img [src]="currentUser.avatar" [alt]="currentUser.name">
+                <div class="voice-indicator" [class.active]="myVoiceActive()"></div>
+              </div>
+              <div class="participant-info">
+                <h4>{{ currentUser.name }} (You)</h4>
+                <p class="participant-level">{{ currentUser.level }}</p>
+              </div>
+            </div>
+
+            <div class="call-animation">
+              <div class="sound-wave">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="participant partner">
+              <div class="participant-avatar">
+                <img [src]="partner.avatar" [alt]="partner.name">
+                <div class="voice-indicator" [class.active]="partnerVoiceActive()"></div>
+              </div>
+              <div class="participant-info">
+                <h4>{{ partner.name }}</h4>
+                <p class="participant-level">{{ partner.level }} • {{ partner.country }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="call-controls">
+            <button 
+              class="control-btn" 
+              [class.active]="isMuted"
+              (click)="toggleMute()">
+              <span>{{ isMuted ? '🔇' : '🎤' }}</span>
+            </button>
+            <button 
+              class="control-btn" 
+              (click)="reportIssue()">
+              <span>⚠️</span>
+            </button>
+          </div>
+
+          <div class="call-stats">
+            <div class="stat">
+              <span class="stat-label">English Speech Detected</span>
+              <span class="stat-value">{{ englishMinutes() }} min</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Credits Earned</span>
+              <span class="stat-value">+{{ creditsEarned() }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Call History -->
+      <div class="call-history" *ngIf="!isInCall && callHistory.length > 0">
+        <h3>Recent Practice Sessions</h3>
+        <div class="history-list">
+          <div class="history-item" *ngFor="let call of callHistory">
+            <div class="history-avatar">
+              <img [src]="call.partnerAvatar" [alt]="call.partnerName">
+            </div>
+            <div class="history-details">
+              <h4>{{ call.partnerName }}</h4>
+              <p>{{ call.duration }} min • {{ call.date }}</p>
+            </div>
+            <div class="history-credits">
+              <span>+{{ call.creditsEarned }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group Discussion Section -->
+    <div class="section-content" *ngIf="activeTab === 'group'">
+      <div class="section-header">
+        <h2>Group Discussions</h2>
+        <p>Join or create live English conversation rooms</p>
+        <button class="create-room-btn" (click)="openCreateRoomModal()">
+          <span>➕</span> Create New Room
+        </button>
+      </div>
+
+      <!-- Active Rooms -->
+      <div class="rooms-grid">
+        <div class="room-card" *ngFor="let room of activeRooms">
+          <div class="room-header">
+            <h3>{{ room.topic }}</h3>
+            <span class="room-level-badge" [class]="room.level">{{ room.level }}</span>
+          </div>
+          <div class="room-info">
+            <div class="room-participants">
+              <div class="avatars-stack">
+                <img 
+                  *ngFor="let participant of room.participants.slice(0, 3)" 
+                  [src]="participant.avatar" 
+                  [alt]="participant.name"
+                  class="participant-thumb">
+                <span class="more-count" *ngIf="room.participants.length > 3">
+                  +{{ room.participants.length - 3 }}
+                </span>
+              </div>
+              <span class="participant-count">
+                {{ room.participants.length }}/{{ room.maxParticipants }} members
+              </span>
+            </div>
+            <div class="room-meta">
+              <span class="room-duration">
+                <span class="icon">⏱️</span> {{ room.duration }} min
+              </span>
+              <span class="room-host">
+                <span class="icon">👤</span> {{ room.hostName }}
+              </span>
+            </div>
+          </div>
+          <button 
+            class="join-room-btn" 
+            (click)="joinRoom(room.id)"
+            [disabled]="room.participants.length >= room.maxParticipants">
+            {{ room.participants.length >= room.maxParticipants ? 'Room Full' : 'Join Discussion' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- No Active Rooms -->
+      <div class="empty-state" *ngIf="activeRooms.length === 0">
+        <span class="empty-icon">💬</span>
+        <h3>No Active Rooms</h3>
+        <p>Be the first to create a discussion room!</p>
+        <button class="create-room-btn" (click)="openCreateRoomModal()">
+          <span>➕</span> Create Room
+        </button>
+      </div>
+    </div>
+
+    <!-- Create Room Modal -->
+    <div class="modal-overlay" *ngIf="showCreateRoomModal" (click)="closeCreateRoomModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Create Discussion Room</h3>
+          <button class="close-btn" (click)="closeCreateRoomModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Room Topic</label>
+            <input 
+              type="text" 
+              [(ngModel)]="newRoom.topic" 
+              placeholder="e.g., Travel Experiences, Business English, Daily Life"
+              class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Speaking Level</label>
+            <select [(ngModel)]="newRoom.level" class="form-select">
+              <option value="basic">Basic</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Max Participants</label>
+            <input 
+              type="number" 
+              [(ngModel)]="newRoom.maxParticipants" 
+              min="2" 
+              max="10" 
+              class="form-input">
+          </div>
+          <div class="form-actions">
+            <button class="btn-secondary" (click)="closeCreateRoomModal()">Cancel</button>
+            <button class="btn-primary" (click)="createRoom()">Create Room</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="info-section">
+      <div class="info-card">
+        <span class="info-icon">💰</span>
+        <h4>Earn While You Practice</h4>
+        <p>Every minute of real English conversation earns you credits. Only genuine English speech is tracked.</p>
+      </div>
+      <div class="info-card">
+        <span class="info-icon">🎯</span>
+        <h4>AI-Verified Speech</h4>
+        <p>Our advanced AI ensures only authentic English conversations count, maintaining quality standards.</p>
+      </div>
+      <div class="info-card">
+        <span class="info-icon">🌍</span>
+        <h4>Global Community</h4>
+        <p>Connect with learners from around the world and experience diverse accents and cultures.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Room Discussion Modal -->
+<div class="modal-overlay" *ngIf="isRoomModalOpen()" (click)="closeRoomModal()">
+  <div class="room-modal" (click)="$event.stopPropagation()">
+    <div class="room-modal-header">
+      <div class="room-header-info">
+        <h2>{{ selectedRoom()?.topic }}</h2>
+        <div class="room-meta">
+          <span class="room-level level-{{ selectedRoom()?.level }}">
+            {{ selectedRoom()?.level }}
+          </span>
+          <span class="room-duration">⏱️ {{ selectedRoom()?.duration }} min</span>
+          <span class="room-members">👥 {{ roomParticipants().length }}/{{ selectedRoom()?.maxParticipants }}</span>
+        </div>
+      </div>
+      <button class="close-btn" (click)="closeRoomModal()">✕</button>
+    </div>
+    
+    <div class="room-modal-body">
+      <!-- Left Side: Participants -->
+      <div class="participants-panel">
+        <div class="participants-header">
+          <h3>Participants</h3>
+          <span class="participant-count">{{ roomParticipants().length }}</span>
+        </div>
+        
+        <div class="participants-list">
+          <div 
+            *ngFor="let participant of roomParticipants()" 
+            class="participant-card"
+            [class.current-user]="participant.isCurrentUser"
+            [class.creator]="participant.isCreator">
+            
+            <img [src]="participant.avatar" [alt]="participant.name" class="participant-avatar">
+            
+            <div class="participant-info">
+              <div class="participant-name-row">
+                <span class="participant-name">{{ participant.name }}</span>
+                <span *ngIf="participant.isCreator" class="creator-badge">👑 Host</span>
+              </div>
+              
+              <div class="participant-details">
+                <span class="participant-gender">{{ getGenderIcon(participant.gender) }}</span>
+                <span class="participant-level" [ngClass]="getLevelBadgeClass(participant.level)">
+                  {{ participant.level }}
+                </span>
+                <span class="participant-time">{{ getTimeAgoText(participant.joinedAgo) }}</span>
+              </div>
+            </div>
+            
+            <div class="participant-controls" *ngIf="!participant.isCurrentUser && isCurrentUserCreator()">
+              <button 
+                class="control-btn mute-btn"
+                [class.muted]="participant.isMuted"
+                (click)="toggleMuteParticipant(participant)"
+                [title]="participant.isMuted ? 'Unmute' : 'Mute'">
+                {{ participant.isMuted ? '🔇' : '🔊' }}
+              </button>
+            </div>
+            
+            <div class="participant-status" *ngIf="participant.isCurrentUser">
+              <button 
+                class="control-btn self-mute-btn"
+                [class.muted]="isUserMuted()"
+                (click)="toggleSelfMute()"
+                [title]="isUserMuted() ? 'Unmute yourself' : 'Mute yourself'">
+                {{ isUserMuted() ? '🔇' : '🎤' }}
+              </button>
+            </div>
+            
+            <div class="muted-indicator" *ngIf="participant.isMuted && !participant.isCurrentUser">
+              <span class="muted-text">Muted by host</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Creator Controls -->
+        <div class="creator-controls" *ngIf="isCurrentUserCreator()">
+          <button 
+            class="creator-control-btn"
+            [class.active]="isChatDisabled()"
+            (click)="toggleChatForAll()">
+            {{ isChatDisabled() ? '🔓 Enable Chat for All' : '🔒 Disable Chat for All' }}
+          </button>
+        </div>
+      </div>
+      
+      <!-- Right Side: Chat -->
+      <div class="chat-panel">
+        <div class="chat-header">
+          <h3>Discussion Chat</h3>
+          <div class="chat-status" *ngIf="isChatDisabled()">
+            <span class="disabled-badge">Chat Disabled by Host</span>
+          </div>
+          <div class="chat-status" *ngIf="isUserMuted() && !isChatDisabled()">
+            <span class="muted-badge">You are muted</span>
+          </div>
+        </div>
+        
+        <div class="chat-messages">
+          <div 
+            *ngFor="let message of chatMessages()" 
+            class="chat-message"
+            [class.own-message]="message.isCurrentUser">
+            
+            <img [src]="message.avatar" [alt]="message.sender" class="message-avatar">
+            
+            <div class="message-content">
+              <div class="message-header">
+                <span class="message-sender">{{ message.sender }}</span>
+                <span class="message-time">{{ formatTimestamp(message.timestamp) }}</span>
+              </div>
+              <div class="message-text">{{ message.text }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="chat-input-container">
+          <!-- Emoji Picker -->
+          <div class="emoji-picker" *ngIf="showEmojiPicker()">
+            <button 
+              *ngFor="let emoji of emojis" 
+              class="emoji-btn"
+              (click)="sendEmoji(emoji)">
+              {{ emoji }}
+            </button>
+          </div>
+          
+          <div class="chat-input-wrapper">
+            <button 
+              class="emoji-toggle-btn"
+              (click)="toggleEmojiPicker()"
+              [disabled]="isChatDisabled() || isUserMuted()">
+              😊
+            </button>
+            
+            <input 
+              type="text"
+              class="chat-input"
+              placeholder="{{ isChatDisabled() ? 'Chat disabled by host' : isUserMuted() ? 'You are muted' : 'Type your message...' }}"
+              [(ngModel)]="newMessage"
+              (keyup.enter)="sendMessage()"
+              [disabled]="isChatDisabled() || isUserMuted()">
+            
+            <button 
+              class="send-btn"
+              (click)="sendMessage()"
+              [disabled]="!newMessage() || isChatDisabled() || isUserMuted()">
+              Send
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

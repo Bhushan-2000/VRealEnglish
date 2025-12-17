@@ -1,0 +1,93 @@
+<div class="learning-container">
+  <div class="container">
+    <button class="back-btn" (click)="goBack()">
+      <span class="back-icon">←</span> Back to Home
+    </button>
+    <div class="page-header">
+      <h1>Interactive Video Lessons</h1>
+      <p class="page-subtitle">Learn English Through Real-Life Conversations with Interactive Practice</p>
+    </div>
+
+    <!-- Lesson Categories -->
+    <div class="category-filter">
+      <button 
+        class="category-btn"
+        [class.active]="selectedCategory === 'all'"
+        (click)="selectedCategory = 'all'">
+        All Lessons
+      </button>
+      <button 
+        class="category-btn"
+        [class.active]="selectedCategory === 'daily'"
+        (click)="selectedCategory = 'daily'">
+        Daily Life
+      </button>
+      <button 
+        class="category-btn"
+        [class.active]="selectedCategory === 'travel'"
+        (click)="selectedCategory = 'travel'">
+        Travel & Tourism
+      </button>
+      <button 
+        class="category-btn"
+        [class.active]="selectedCategory === 'business'"
+        (click)="selectedCategory = 'business'">
+        Business English
+      </button>
+    </div>
+
+    <!-- Video Lessons Grid -->
+    <div class="lessons-grid">
+      <div class="lesson-card" *ngFor="let lesson of getFilteredLessons()">
+        <div class="lesson-thumbnail" [style.background-image]="'url(' + lesson.thumbnail + ')'">
+          <div class="lesson-overlay">
+            <button class="play-btn" (click)="startLesson(lesson)">
+              <span class="play-icon">▶</span>
+            </button>
+          </div>
+          <div class="lesson-badges">
+            <span class="level-badge" [class]="'level-' + lesson.level">{{ lesson.level }}</span>
+            <span class="duration-badge">⏱️ {{ lesson.duration }}</span>
+          </div>
+        </div>
+        <div class="lesson-content">
+          <h3>{{ lesson.title }}</h3>
+          <p class="lesson-description">{{ lesson.description }}</p>
+          <div class="lesson-features">
+            <span class="feature-tag">🎙️ {{ lesson.dialogueLines }} Lines</span>
+            <span class="feature-tag">📚 {{ lesson.vocabularyCount }} Words</span>
+            <span class="feature-tag">✏️ {{ lesson.grammarPoints }} Grammar</span>
+          </div>
+          <button class="start-lesson-btn" (click)="startLesson(lesson)">
+            Start Lesson
+            <span class="arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-icon">📹</div>
+        <div class="stat-number">{{ lessons.length }}</div>
+        <div class="stat-label">Video Lessons</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💬</div>
+        <div class="stat-number">{{ getTotalDialogues() }}</div>
+        <div class="stat-label">Dialogue Lines</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📖</div>
+        <div class="stat-number">{{ getTotalVocabulary() }}</div>
+        <div class="stat-label">Vocabulary Words</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✨</div>
+        <div class="stat-number">{{ getTotalGrammar() }}</div>
+        <div class="stat-label">Grammar Points</div>
+      </div>
+    </div>
+  </div>
+</div>

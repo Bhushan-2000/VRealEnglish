@@ -1,0 +1,9 @@
+.admin-container { padding:3rem 1rem; }
+.admin-sections { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap:1.5rem; margin-top:2.25rem; }
+.admin-card { position:relative; background: linear-gradient(135deg, rgba(26,35,50,1) 0%, rgba(15,23,36,1) 95%); padding:1.75rem 1.5rem; border-radius:18px; color:#fff; border:1px solid var(--border); box-shadow:0 12px 34px -10px rgba(0,0,0,.52); transition:transform .35s ease, box-shadow .35s ease, border-color .35s; overflow:hidden; }
+.admin-card:before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 20% 20%, rgba(0,194,138,0.22), transparent 60%); }
+.admin-card:hover { transform:translateY(-6px); box-shadow:0 18px 48px -14px rgba(0,0,0,.55); border-color: var(--brand-accent); }
+.admin-card h3 { margin:0 0 .75rem; font-size:1.15rem; font-weight:600; }
+.admin-card p { margin:0 0 1.25rem; font-size:.9rem; line-height:1.55; color:var(--text-secondary); }
+button { background: linear-gradient(90deg,#00C28A,#06B6D4); color:#fff; border:none; padding:.6rem 1.05rem; border-radius:10px; cursor:pointer; margin-top:.5rem; font-weight:600; transition:filter .25s; }
+button:hover { filter:brightness(1.12); }

@@ -1,0 +1,6 @@
+.ai-coach-container { padding:3rem 1rem; }
+.recorder { margin-top:2.25rem; text-align:center; }
+.record-btn { position:relative; background: linear-gradient(90deg, #00C28A, #06B6D4); color:#fff; border:none; padding:1rem 2.25rem; border-radius:60px; font-size:1.05rem; cursor:pointer; font-weight:600; box-shadow:0 10px 30px -8px rgba(0,0,0,.55); transition: transform .35s ease, box-shadow .35s ease, filter .3s; }
+.record-btn:hover { transform:translateY(-4px); box-shadow:0 16px 42px -12px rgba(0,0,0,.6); filter:brightness(1.08); }
+.record-btn:active { transform:translateY(0); box-shadow:0 8px 24px -8px rgba(0,0,0,.55); }
+.feedback-section { margin-top:2rem; background: linear-gradient(145deg, rgba(26,35,50,1) 0%, rgba(15,23,36,1) 100%); padding:2rem; border-radius:16px; color: var(--text-secondary); min-height:220px; border:1px solid var(--border); box-shadow:0 10px 28px -6px rgba(0,0,0,.45); }

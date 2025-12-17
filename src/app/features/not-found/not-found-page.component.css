@@ -1,0 +1,5 @@
+.not-found-container { padding:5rem 1rem 6rem; text-align:center; color:#fff; }
+.not-found-container h1 { font-size:6rem; margin:0; background: linear-gradient(90deg,#0B6EFF,#00C28A); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 10px 24px rgba(0,0,0,.55)); }
+.not-found-container p { margin:1rem auto 0; max-width:560px; font-size:1.05rem; line-height:1.6; color:var(--text-secondary); }
+.home-link { display:inline-block; margin-top:2.5rem; background: linear-gradient(90deg,#0B6EFF,#00C28A); color:#fff; padding:.85rem 2.1rem; border-radius:12px; text-decoration:none; font-weight:600; box-shadow:0 12px 34px -10px rgba(0,0,0,.55); transition:transform .35s ease, box-shadow .35s ease; }
+.home-link:hover { transform:translateY(-4px); box-shadow:0 18px 50px -12px rgba(0,0,0,.6); }

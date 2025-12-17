@@ -1,0 +1,82 @@
+<div class="module360-container container">
+  <button class="back-btn" (click)="goBack()">
+    <span class="back-icon">←</span> Back to Courses
+  </button>
+  <div class="hero-section">
+    <h1>360° VR Modules</h1>
+    <p>Immersive English learning scenarios in virtual reality</p>
+  </div>
+
+  <!-- Module Selection Grid -->
+  <div class="modules-grid">
+    <div 
+      *ngFor="let module of modules" 
+      class="module-card"
+      [class.selected]="selectedModule?.id === module.id"
+      (click)="selectModule(module)"
+      (keydown.enter)="selectModule(module)"
+      (keydown.space)="selectModule(module)"
+      tabindex="0"
+      role="button"
+      [attr.aria-label]="'Select ' + module.title + ' module'"
+    >
+      <div class="module-thumbnail">
+        <img [src]="module.thumbnail" [alt]="module.title + ' thumbnail'" loading="lazy">
+        <div class="module-overlay">
+          <span class="duration">{{ module.duration }}</span>
+          <span class="difficulty" [style.background-color]="getDifficultyColor(module.difficulty)">
+            {{ module.difficulty }}
+          </span>
+        </div>
+      </div>
+      <div class="module-info">
+        <h3>{{ module.title }}</h3>
+        <p>{{ module.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 360 Viewer Section -->
+  <div class="viewer-section" *ngIf="selectedModule">
+    <div class="viewer-header">
+      <h2>{{ selectedModule.title }}</h2>
+      <p>{{ selectedModule.description }}</p>
+    </div>
+    
+    <div class="viewer-wrapper">
+      <div 
+        #viewer360 
+        class="viewer-360"
+        [class.loading]="isLoading"
+        role="region"
+        aria-label="360 degree video player"
+      >
+        <div class="loading-spinner" *ngIf="isLoading">
+          <div class="spinner"></div>
+          <p>Loading 360° experience...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="viewer-controls">
+      <div class="instruction">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>Click and drag to look around. Use fullscreen for best VR experience.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!selectedModule">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"></path>
+      <path d="M12 6v6l4 2"></path>
+    </svg>
+    <h3>Select a 360° module to begin</h3>
+    <p>Choose from our immersive English learning scenarios above</p>
+  </div>
+</div>

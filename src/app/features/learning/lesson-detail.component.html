@@ -1,0 +1,445 @@
+<div class="lesson-detail-container" *ngIf="lessonData">
+  <!-- Header -->
+  <div class="lesson-header">
+    <button class="back-btn" (click)="goBack()">
+      <span class="back-icon">←</span> Back to Lessons
+    </button>
+    <div class="lesson-title-section">
+      <h1>{{ lessonData.title }}</h1>
+      <div class="lesson-meta">
+        <span class="meta-badge level-{{ lessonData.level }}">{{ lessonData.level }}</span>
+        <span class="meta-badge category">{{ lessonData.category }}</span>
+        <span class="progress-badge">{{ getProgressPercentage() }}% Complete</span>
+      </div>
+    </div>
+    <div class="action-buttons">
+      <button class="action-btn ai-coach-btn" (click)="toggleAIPanel()" title="AI Coach Feedback">
+        🤖 AI Coach
+      </button>
+      <button class="action-btn mentor-btn" (click)="toggleMentorPanel()" title="Book Live Mentor">
+        👨‍🏫 Live Mentor
+      </button>
+      <button class="action-btn" (click)="downloadTranscript()" title="Download Transcript">
+        📥 Download
+      </button>
+      <div class="speed-control">
+        <label>Speed:</label>
+        <button 
+          class="speed-btn"
+          [class.active]="playbackSpeed() === 0.75"
+          (click)="setPlaybackSpeed(0.75)">
+          0.75x
+        </button>
+        <button 
+          class="speed-btn"
+          [class.active]="playbackSpeed() === 1"
+          (click)="setPlaybackSpeed(1)">
+          1x
+        </button>
+        <button 
+          class="speed-btn"
+          [class.active]="playbackSpeed() === 1.25"
+          (click)="setPlaybackSpeed(1.25)">
+          1.25x
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="lesson-content">
+    <!-- Left Panel: Video -->
+    <div class="video-panel">
+      <div class="video-container">
+        <!-- YouTube Video -->
+        <iframe 
+          *ngIf="videoUrl && lessonData && !lessonData.videoId.includes('local')"
+          [src]="videoUrl"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+        
+        <!-- Local Video -->
+        <video 
+          *ngIf="videoUrl && lessonData && lessonData.videoId.includes('local')"
+          [src]="videoUrl"
+          controls
+          class="local-video">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      
+      <!-- Video Controls Info -->
+      <div class="video-info">
+        <div class="info-tip">
+          <span class="tip-icon">💡</span>
+          <p>Watch the video and follow along with the interactive transcript below. Click play buttons to hear pronunciation!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Tabs -->
+    <div class="interactive-panel">
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button 
+          class="tab-btn"
+          [class.active]="currentTab() === 'transcript'"
+          (click)="switchTab('transcript')">
+          <span class="tab-icon">💬</span>
+          Transcript
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="currentTab() === 'vocabulary'"
+          (click)="switchTab('vocabulary')">
+          <span class="tab-icon">📚</span>
+          Vocabulary
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="currentTab() === 'grammar'"
+          (click)="switchTab('grammar')">
+          <span class="tab-icon">✏️</span>
+          Grammar
+        </button>
+      </div>
+
+      <!-- Transcript Tab -->
+      <div class="tab-content" *ngIf="currentTab() === 'transcript'">
+        <div class="transcript-header">
+          <h3>Interactive Dialogue</h3>
+          <p class="subtitle">Click ▶ to hear each line, 🎤 to practice speaking</p>
+        </div>
+        
+        <div class="dialogue-list">
+          <div 
+            *ngFor="let line of lessonData.dialogue"
+            class="dialogue-line"
+            [class.active]="currentLineId() === line.id"
+            [class.completed]="completedLines().has(line.id)"
+            [class.bookmarked]="bookmarkedLines().has(line.id)">
+            
+            <div class="line-header">
+              <div class="speaker-info">
+                <span class="speaker-avatar">{{ line.speaker.charAt(0) }}</span>
+                <span class="speaker-name">{{ line.speaker }}</span>
+              </div>
+              <div class="line-actions">
+                <button 
+                  class="action-icon-btn bookmark-btn"
+                  [class.active]="bookmarkedLines().has(line.id)"
+                  (click)="toggleBookmark(line.id)"
+                  title="Bookmark">
+                  {{ bookmarkedLines().has(line.id) ? '⭐' : '☆' }}
+                </button>
+                <button 
+                  class="action-icon-btn play-btn"
+                  (click)="playLine(line)"
+                  [disabled]="currentLineId() === line.id"
+                  title="Play audio">
+                  ▶
+                </button>
+                <button 
+                  class="action-icon-btn record-btn"
+                  [class.recording]="isRecording()"
+                  (click)="startRecording(line)"
+                  title="Practice pronunciation">
+                  🎤
+                </button>
+              </div>
+            </div>
+            
+            <div class="line-content">
+              <p class="line-text">{{ line.text }}</p>
+              <span class="timestamp">{{ line.timestamp }}s</span>
+            </div>
+            
+            <!-- Pronunciation Feedback -->
+            <div class="pronunciation-feedback" *ngIf="recognizedText() && currentLineId() === line.id">
+              <div class="feedback-header">
+                <span class="feedback-label">You said:</span>
+                <span class="score" [class]="pronunciationScore()! >= 70 ? 'good' : 'needs-work'">
+                  Score: {{ pronunciationScore() }}%
+                </span>
+              </div>
+              <p class="recognized-text">{{ recognizedText() }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vocabulary Tab -->
+      <div class="tab-content" *ngIf="currentTab() === 'vocabulary'">
+        <div class="vocabulary-header">
+          <h3>Key Vocabulary</h3>
+          <p class="subtitle">{{ lessonData.vocabulary.length }} important words and phrases</p>
+        </div>
+        
+        <div class="vocabulary-list">
+          <div 
+            *ngFor="let item of lessonData.vocabulary"
+            class="vocabulary-card">
+            <div class="vocab-header">
+              <h4 class="vocab-word">{{ item.word }}</h4>
+              <button 
+                class="action-icon-btn play-btn"
+                (click)="playVocabulary(item)"
+                title="Hear pronunciation">
+                🔊
+              </button>
+            </div>
+            <p class="vocab-meaning">
+              <span class="label">Meaning:</span> {{ item.meaning }}
+            </p>
+            <p class="vocab-example">
+              <span class="label">Example:</span> <em>"{{ item.example }}"</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grammar Tab -->
+      <div class="tab-content" *ngIf="currentTab() === 'grammar'">
+        <div class="grammar-header">
+          <h3>Grammar Points</h3>
+          <p class="subtitle">{{ lessonData.grammar.length }} key grammar structures used in this lesson</p>
+        </div>
+        
+        <div class="grammar-list">
+          <div 
+            *ngFor="let point of lessonData.grammar; let i = index"
+            class="grammar-card">
+            <div class="grammar-number">{{ i + 1 }}</div>
+            <h4 class="grammar-title">{{ point.title }}</h4>
+            <p class="grammar-explanation">{{ point.explanation }}</p>
+            <div class="grammar-examples">
+              <span class="examples-label">Examples:</span>
+              <ul>
+                <li *ngFor="let example of point.examples">{{ example }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-section">
+    <div class="progress-info">
+      <span class="progress-label">Your Progress</span>
+      <span class="progress-text">{{ completedLines().size }} / {{ lessonData.dialogue.length }} lines completed</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+    </div>
+  </div>
+
+  <!-- AI Coach Panel (Slide-in) -->
+  <div class="side-panel ai-coach-panel" [class.open]="showAIPanel()">
+    <div class="panel-header">
+      <h3>🤖 AI Coach Feedback</h3>
+      <button class="close-btn" (click)="closeAIPanel()">✕</button>
+    </div>
+    
+    <div class="panel-content" *ngIf="aiFeedback()">
+      <!-- Overall Score -->
+      <div class="overall-score-card">
+        <div class="score-circle" [class.excellent]="aiFeedback()!.overallScore >= 85" 
+             [class.good]="aiFeedback()!.overallScore >= 70 && aiFeedback()!.overallScore < 85"
+             [class.needs-work]="aiFeedback()!.overallScore < 70">
+          <span class="score-number">{{ aiFeedback()!.overallScore }}</span>
+          <span class="score-suffix">%</span>
+        </div>
+        <p class="overall-feedback">
+          <ng-container *ngIf="aiFeedback()!.overallScore >= 85">Excellent work! Keep it up!</ng-container>
+          <ng-container *ngIf="aiFeedback()!.overallScore >= 70 && aiFeedback()!.overallScore < 85">Good job! With more practice, you'll be perfect!</ng-container>
+          <ng-container *ngIf="aiFeedback()!.overallScore < 70">Keep practicing! You're improving!</ng-container>
+        </p>
+      </div>
+
+      <!-- Detailed Feedback Sections -->
+      <div class="feedback-sections">
+        <!-- Pronunciation -->
+        <div class="feedback-card">
+          <div class="feedback-card-header">
+            <h4>🗣️ Pronunciation</h4>
+            <span class="score-badge" [class.good]="aiFeedback()!.pronunciation.score >= 70">
+              {{ aiFeedback()!.pronunciation.score }}%
+            </span>
+          </div>
+          <div class="feedback-content">
+            <div class="errors-section" *ngIf="aiFeedback()!.pronunciation.errors.length > 0">
+              <p class="section-label">Errors Detected:</p>
+              <ul>
+                <li *ngFor="let error of aiFeedback()!.pronunciation.errors">{{ error }}</li>
+              </ul>
+            </div>
+            <div class="suggestions-section">
+              <p class="section-label">💡 Suggestions:</p>
+              <ul>
+                <li *ngFor="let suggestion of aiFeedback()!.pronunciation.suggestions">{{ suggestion }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grammar -->
+        <div class="feedback-card">
+          <div class="feedback-card-header">
+            <h4>✏️ Grammar</h4>
+            <span class="score-badge" [class.good]="aiFeedback()!.grammar.score >= 70">
+              {{ aiFeedback()!.grammar.score }}%
+            </span>
+          </div>
+          <div class="feedback-content">
+            <div class="errors-section">
+              <p class="section-label">Analysis:</p>
+              <ul>
+                <li *ngFor="let error of aiFeedback()!.grammar.errors">{{ error }}</li>
+              </ul>
+            </div>
+            <div class="corrections-section" *ngIf="aiFeedback()!.grammar.corrections.length > 0">
+              <p class="section-label">💡 Tips:</p>
+              <ul>
+                <li *ngFor="let correction of aiFeedback()!.grammar.corrections">{{ correction }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fluency -->
+        <div class="feedback-card">
+          <div class="feedback-card-header">
+            <h4>🎯 Fluency</h4>
+            <span class="score-badge" [class.good]="aiFeedback()!.fluency.score >= 70">
+              {{ aiFeedback()!.fluency.score }}%
+            </span>
+          </div>
+          <div class="feedback-content">
+            <p>{{ aiFeedback()!.fluency.feedback }}</p>
+          </div>
+        </div>
+
+        <!-- Accent -->
+        <div class="feedback-card">
+          <div class="feedback-card-header">
+            <h4>🎤 Accent & Intonation</h4>
+            <span class="score-badge" [class.good]="aiFeedback()!.accent.score >= 70">
+              {{ aiFeedback()!.accent.score }}%
+            </span>
+          </div>
+          <div class="feedback-content">
+            <p class="section-label">💡 Tips to improve:</p>
+            <ul>
+              <li *ngFor="let tip of aiFeedback()!.accent.tips">{{ tip }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Practice History -->
+      <div class="practice-history" *ngIf="practiceHistory().length > 0">
+        <h4>📊 Practice History</h4>
+        <div class="history-list">
+          <div class="history-item" *ngFor="let practice of practiceHistory().slice(-5)">
+            <span class="practice-time">{{ practice.timestamp | date: 'short' }}</span>
+            <span class="practice-score" [class.good]="practice.score >= 70">{{ practice.score }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-content analyzing" *ngIf="isAnalyzing()">
+      <div class="analyzing-animation">
+        <div class="spinner"></div>
+        <p>AI is analyzing your speech...</p>
+      </div>
+    </div>
+
+    <div class="panel-content empty" *ngIf="!aiFeedback() && !isAnalyzing()">
+      <div class="empty-state">
+        <span class="empty-icon">🎤</span>
+        <h4>Practice to Get Feedback</h4>
+        <p>Click the 🎤 button next to any dialogue line to practice pronunciation and get AI-powered feedback!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Mentor Panel (Slide-in) -->
+  <div class="side-panel mentor-panel" [class.open]="showMentorPanel()">
+    <div class="panel-header">
+      <h3>👨‍🏫 Live Mentor Sessions</h3>
+      <button class="close-btn" (click)="closeMentorPanel()">✕</button>
+    </div>
+    
+    <div class="panel-content">
+      <div class="mentor-intro">
+        <p>Book a live session with expert mentors to discuss this video lesson:</p>
+        <ul class="mentor-benefits">
+          <li>📖 Detailed context explanation of scenes</li>
+          <li>🔤 Word-by-word breakdown and usage</li>
+          <li>✏️ Grammar and sentence structure analysis</li>
+          <li>❓ Get your doubts resolved instantly</li>
+          <li>🎯 Real-life application tips</li>
+        </ul>
+      </div>
+
+      <!-- Available Sessions -->
+      <div class="mentor-sessions-list">
+        <h4>Available Sessions for "{{ lessonData.title }}"</h4>
+        
+        <div class="mentor-card" *ngFor="let session of mentorSessions()">
+          <div class="mentor-profile">
+            <img [src]="session.mentorPhoto" [alt]="session.mentorName" class="mentor-avatar">
+            <div class="mentor-info">
+              <h5>{{ session.mentorName }}</h5>
+              <div class="mentor-rating">
+                <span class="stars">⭐ {{ session.rating }}</span>
+                <span class="review-count">(250+ reviews)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="session-details">
+            <div class="detail-row">
+              <span class="detail-icon">📅</span>
+              <span>{{ session.date | date: 'fullDate' }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-icon">🕐</span>
+              <span>{{ session.time }} ({{ session.duration }})</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-icon">👥</span>
+              <span>{{ session.availableSlots }} spots left</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-icon">💰</span>
+              <span class="price">₹{{ session.price }}</span>
+            </div>
+          </div>
+
+          <div class="session-topics">
+            <p class="topics-label">Topics Covered:</p>
+            <div class="topics-tags">
+              <span class="topic-tag" *ngFor="let topic of session.topics">{{ topic }}</span>
+            </div>
+          </div>
+
+          <button class="book-btn" (click)="bookMentorSession(session)">
+            Book Session →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-state" *ngIf="!lessonData">
+  <div class="spinner"></div>
+  <p>Loading lesson...</p>
+</div>
