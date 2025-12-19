@@ -120,11 +120,11 @@ export class LessonDetailComponent implements OnInit, OnDestroy {
       category: 'daily',
       thumbnail: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&q=80',
       dialogue: [
-        { id: 1, speaker: 'Priya', text: 'Hey, are you ready to order?', timestamp: 0 },
+        { id: 1, speaker: 'Rucha', text: 'Hey, are you ready to order?', timestamp: 0 },
         { id: 2, speaker: 'Arjun', text: 'Hi! Yes, can I have a cappuccino?', timestamp: 3 },
-        { id: 3, speaker: 'Priya', text: 'Sure! Would you like anything else with that?', timestamp: 6 },
+        { id: 3, speaker: 'Rucha', text: 'Sure! Would you like anything else with that?', timestamp: 6 },
         { id: 4, speaker: 'Arjun', text: 'Uh, try the coffee cake. It\'s delicious!', timestamp: 10 },
-        { id: 5, speaker: 'Priya', text: 'Oh thanks! Why not? And some coffee cake please.', timestamp: 14 },
+        { id: 5, speaker: 'Rucha', text: 'Oh thanks! Why not? And some coffee cake please.', timestamp: 14 },
         { id: 6, speaker: 'Kavya', text: 'Hey, are you studying here too?', timestamp: 20 },
         { id: 7, speaker: 'Arjun', text: 'Yes, I am! So where are you from?', timestamp: 23 },
         { id: 8, speaker: 'Kavya', text: 'I\'m from Mumbai. Wow, that\'s so cool!', timestamp: 27 },
@@ -133,9 +133,9 @@ export class LessonDetailComponent implements OnInit, OnDestroy {
         { id: 11, speaker: 'Arjun', text: 'Yes it is, but I\'ve met a lot of international students at our college.', timestamp: 39 },
         { id: 12, speaker: 'Kavya', text: 'Oh me too! I met someone from Bangalore yesterday.', timestamp: 45 },
         { id: 13, speaker: 'Arjun', text: 'It\'s great to be in such an international place!', timestamp: 50 },
-        { id: 14, speaker: 'Priya', text: 'Excuse me, I\'ll bring you a cappuccino and coffee cake over to your table when they\'re ready.', timestamp: 55 },
+        { id: 14, speaker: 'Rucha', text: 'Excuse me, I\'ll bring you a cappuccino and coffee cake over to your table when they\'re ready.', timestamp: 55 },
         { id: 15, speaker: 'Arjun', text: 'Oh great, thank you!', timestamp: 62 },
-        { id: 16, speaker: 'Priya', text: 'Along with your check.', timestamp: 65 }
+        { id: 16, speaker: 'Rucha', text: 'Along with your check.', timestamp: 65 }
       ],
       vocabulary: [
         { word: 'cappuccino', meaning: 'A type of coffee with steamed milk and foam', example: 'I ordered a cappuccino at the café.' },
@@ -264,17 +264,17 @@ export class LessonDetailComponent implements OnInit, OnDestroy {
       thumbnail: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80',
       dialogue: [
         { id: 1, speaker: 'Barista', text: 'Good morning! Welcome to Coffee House. What can I get for you today?', timestamp: 0 },
-        { id: 2, speaker: 'Priya', text: 'Good morning! I\'d like a cappuccino, please.', timestamp: 4 },
+        { id: 2, speaker: 'Rucha', text: 'Good morning! I\'d like a cappuccino, please.', timestamp: 4 },
         { id: 3, speaker: 'Barista', text: 'Sure! What size would you like? Small, medium, or large?', timestamp: 7 },
-        { id: 4, speaker: 'Priya', text: 'I\'ll have a medium, please.', timestamp: 11 },
+        { id: 4, speaker: 'Rucha', text: 'I\'ll have a medium, please.', timestamp: 11 },
         { id: 5, speaker: 'Barista', text: 'Great choice! Would you like that hot or iced?', timestamp: 14 },
-        { id: 6, speaker: 'Priya', text: 'Hot, please. Can I also get a chocolate muffin?', timestamp: 17 },
+        { id: 6, speaker: 'Rucha', text: 'Hot, please. Can I also get a chocolate muffin?', timestamp: 17 },
         { id: 7, speaker: 'Barista', text: 'Of course! Anything else?', timestamp: 21 },
-        { id: 8, speaker: 'Priya', text: 'No, that\'s all. How much is it?', timestamp: 24 },
+        { id: 8, speaker: 'Rucha', text: 'No, that\'s all. How much is it?', timestamp: 24 },
         { id: 9, speaker: 'Barista', text: 'That will be ₹350 in total.', timestamp: 27 },
-        { id: 10, speaker: 'Priya', text: 'Here you go. Can I pay by card?', timestamp: 30 },
+        { id: 10, speaker: 'Rucha', text: 'Here you go. Can I pay by card?', timestamp: 30 },
         { id: 11, speaker: 'Barista', text: 'Yes, of course. You can tap your card here.', timestamp: 33 },
-        { id: 12, speaker: 'Priya', text: 'Perfect! Thank you so much!', timestamp: 36 }
+        { id: 12, speaker: 'Rucha', text: 'Perfect! Thank you so much!', timestamp: 36 }
       ],
       vocabulary: [
         { word: 'cappuccino', meaning: 'Espresso coffee with steamed milk foam', example: 'I always order a cappuccino in the morning.' },
@@ -766,13 +766,13 @@ export class LessonDetailComponent implements OnInit, OnDestroy {
     const mockSessions: MentorSession[] = [
       {
         id: 'ms-1',
-        mentorName: 'Dr. Priya Sharma',
+        mentorName: 'Dr. Rucha Sharma',
         mentorPhoto: 'https://randomuser.me/api/portraits/women/44.jpg',
         date: '2025-12-18',
         time: '10:00 AM IST',
         duration: '60 minutes',
         availableSlots: 5,
-        price: 500,
+        price: 0,
         topics: ['Video Context Explanation', 'Grammar Deep Dive', 'Q&A Session'],
         rating: 4.8
       },
@@ -784,7 +784,7 @@ export class LessonDetailComponent implements OnInit, OnDestroy {
         time: '3:00 PM IST',
         duration: '45 minutes',
         availableSlots: 8,
-        price: 400,
+        price: 0,
         topics: ['Pronunciation Practice', 'Cultural Context', 'Doubt Resolution'],
         rating: 4.9
       },
@@ -796,7 +796,7 @@ export class LessonDetailComponent implements OnInit, OnDestroy {
         time: '6:00 PM IST',
         duration: '90 minutes',
         availableSlots: 3,
-        price: 700,
+        price: 0,
         topics: ['Complete Scene Analysis', 'Vocabulary Building', 'Real-life Application'],
         rating: 5.0
       }

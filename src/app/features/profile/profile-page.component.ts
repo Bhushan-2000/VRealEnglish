@@ -42,15 +42,17 @@ interface Activity {
   standalone: false
 })
 export class ProfilePageComponent implements OnInit {
+  profileImage = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces';
+
   user: UserProfile = {
-    name: 'Rajesh Kumar Sharma',
-    email: 'rajesh.sharma@gmail.com',
-    phone: '+91 98765 43210',
-    address: '42, Green Valley Apartments, Sector 15',
-    city: 'Mumbai',
+    name: 'Bhushan Sunil Bari',
+    email: 'bhushan.bari@gmail.com',
+    phone: '+91 8856096495',
+    address: 'Hinjewadi, IT Park Phase 1',
+    city: 'Pune',
     state: 'Maharashtra',
     country: 'India',
-    pincode: '400076',
+    pincode: '411057',
     level: 'Intermediate',
     joinedDate: new Date('2024-03-15'),
     totalPracticeTime: 2847, // minutes

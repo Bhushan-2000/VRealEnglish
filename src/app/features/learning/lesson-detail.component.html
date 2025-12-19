@@ -377,7 +377,8 @@
     
     <div class="panel-content">
       <div class="mentor-intro">
-        <p>Book a live session with expert mentors to discuss this video lesson:</p>
+        <div class="included-badge">✨ Included in Your Course</div>
+        <p>Join live sessions with expert mentors to discuss this video lesson - completely free as part of your ₹14,999 VR English Course:</p>
         <ul class="mentor-benefits">
           <li>📖 Detailed context explanation of scenes</li>
           <li>🔤 Word-by-word breakdown and usage</li>
@@ -416,9 +417,9 @@
               <span class="detail-icon">👥</span>
               <span>{{ session.availableSlots }} spots left</span>
             </div>
-            <div class="detail-row">
-              <span class="detail-icon">💰</span>
-              <span class="price">₹{{ session.price }}</span>
+            <div class="detail-row included-tag">
+              <span class="detail-icon">✨</span>
+              <span class="included-text">Included in Course</span>
             </div>
           </div>
 
@@ -430,7 +431,7 @@
           </div>
 
           <button class="book-btn" (click)="bookMentorSession(session)">
-            Book Session →
+            Join Session (Free) →
           </button>
         </div>
       </div>

@@ -47,7 +47,8 @@ export class WalletPageComponent implements OnInit, OnDestroy {
   monthlyTarget = 60 * 60 * 2 * 30; // 2 hours daily for 30 days = 3600 seconds
   
   // Earnings calculation
-  earningsPerMinute = 0.19416667; // ₹699 / 60 hours = ₹11.65/hour ÷ 60 minutes = ₹0.1942 per minute
+  // ₹699 subscription / 60 hours target = ₹11.65 per hour / 60 = ₹0.194166667 per minute
+  earningsPerMinute = 0.194166667;
   totalEarnings = 0;
   pendingPayout = 0;
   
@@ -55,45 +56,45 @@ export class WalletPageComponent implements OnInit, OnDestroy {
     {
       id: 'session-1',
       date: '2025-12-14 10:30 AM',
-      duration: 7200,
-      verifiedDuration: 6480,
+      duration: 7200, // 2 hours = 120 minutes
+      verifiedDuration: 6480, // 108 minutes AI-verified
       type: 'group-call',
       participants: 8,
-      earnings: 20.98
+      earnings: 20.97 // 108 minutes * 0.194166667 = ₹20.97
     },
     {
       id: 'session-2',
       date: '2025-12-13 09:15 AM',
-      duration: 7200,
-      verifiedDuration: 6300,
+      duration: 7200, // 2 hours = 120 minutes
+      verifiedDuration: 6300, // 105 minutes AI-verified
       type: 'random-call',
-      earnings: 20.39
+      earnings: 20.39 // 105 minutes * 0.194166667 = ₹20.39
     },
     {
       id: 'session-3',
       date: '2025-12-12 08:45 AM',
-      duration: 7200,
-      verifiedDuration: 6600,
+      duration: 7200, // 2 hours = 120 minutes
+      verifiedDuration: 6600, // 110 minutes AI-verified
       type: 'group-call',
       participants: 5,
-      earnings: 21.36
+      earnings: 21.36 // 110 minutes * 0.194166667 = ₹21.36
     },
     {
       id: 'session-4',
       date: '2025-12-11 11:00 AM',
-      duration: 7200,
-      verifiedDuration: 6420,
+      duration: 7200, // 2 hours = 120 minutes
+      verifiedDuration: 6420, // 107 minutes AI-verified
       type: 'random-call',
-      earnings: 20.78
+      earnings: 20.78 // 107 minutes * 0.194166667 = ₹20.78
     },
     {
       id: 'session-5',
       date: '2025-12-10 02:30 PM',
-      duration: 7200,
-      verifiedDuration: 6540,
+      duration: 7200, // 2 hours = 120 minutes
+      verifiedDuration: 6540, // 109 minutes AI-verified
       type: 'group-call',
       participants: 10,
-      earnings: 21.17
+      earnings: 21.16 // 109 minutes * 0.194166667 = ₹21.16
     }
   ];
 
@@ -209,16 +210,15 @@ export class WalletPageComponent implements OnInit, OnDestroy {
   }
 
   openCouponModal(brand: string, minAmount: number, maxAmount: number): void {
-    this.wallet$.subscribe(wallet => {
-      if (wallet.balance < minAmount) {
-        this.toastService.error(`Insufficient balance! You need at least ₹${minAmount} to create a ${brand} coupon.`);
-        return;
-      }
-      
-      this.selectedBrand.set({ name: brand, min: minAmount, max: maxAmount });
-      this.couponAmount.set(minAmount);
-      this.showCouponModal.set(true);
-    }).unsubscribe();
+    const currentWallet = this.walletService.walletSubject.value;
+    if (currentWallet.balance < minAmount) {
+      this.toastService.error(`Insufficient balance! You need at least ₹${minAmount} to create a ${brand} coupon. Your current balance is ₹${currentWallet.balance.toFixed(2)}.`);
+      return;
+    }
+    
+    this.selectedBrand.set({ name: brand, min: minAmount, max: maxAmount });
+    this.couponAmount.set(minAmount);
+    this.showCouponModal.set(true);
   }
 
   closeCouponModal(): void {
@@ -231,46 +231,45 @@ export class WalletPageComponent implements OnInit, OnDestroy {
     const brand = this.selectedBrand();
     if (!brand) return;
 
-    this.wallet$.subscribe(wallet => {
-      const amount = this.couponAmount();
+    const amount = this.couponAmount();
+    const currentWallet = this.walletService.walletSubject.value;
 
-      if (isNaN(amount) || amount <= 0) {
-        this.toastService.error('Please enter a valid amount!');
-        return;
-      }
+    if (isNaN(amount) || amount <= 0) {
+      this.toastService.error('Please enter a valid amount!');
+      return;
+    }
 
-      if (amount < brand.min) {
-        this.toastService.error(`Minimum coupon amount for ${brand.name} is ₹${brand.min}!`);
-        return;
-      }
+    if (amount < brand.min) {
+      this.toastService.error(`Minimum coupon amount for ${brand.name} is ₹${brand.min}!`);
+      return;
+    }
 
-      if (amount > brand.max) {
-        this.toastService.error(`Maximum coupon amount for ${brand.name} is ₹${brand.max}!`);
-        return;
-      }
+    if (amount > brand.max) {
+      this.toastService.error(`Maximum coupon amount for ${brand.name} is ₹${brand.max}!`);
+      return;
+    }
 
-      if (amount > wallet.balance) {
-        this.toastService.error(`Insufficient balance! You only have ₹${wallet.balance.toFixed(2)} in your wallet.`);
-        return;
-      }
+    if (amount > currentWallet.balance) {
+      this.toastService.error(`Insufficient balance! You only have ₹${currentWallet.balance.toFixed(2)} in your wallet but trying to create a ₹${amount} coupon.`);
+      return;
+    }
 
-      // Generate coupon code
-      const couponCode = `VRE${brand.name.substring(0, 3).toUpperCase()}${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+    // Generate coupon code
+    const couponCode = `VRE${brand.name.substring(0, 3).toUpperCase()}${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
-      // Deduct from wallet
-      this.walletService.spend(amount, `${brand.name.charAt(0).toUpperCase() + brand.name.slice(1)} coupon created`)
-        .subscribe(
-          () => {
-            this.generatedCoupon.set({ code: couponCode, amount, brand: brand.name });
-            this.closeCouponModal();
-            this.showCouponResultModal.set(true);
-            this.toastService.success('Coupon created successfully!');
-          },
-          (error) => {
-            this.toastService.error(error.message || 'Failed to create coupon. Please try again.');
-          }
-        );
-    }).unsubscribe();
+    // Deduct from wallet
+    this.walletService.spend(amount, `${brand.name.charAt(0).toUpperCase() + brand.name.slice(1)} coupon created`)
+      .subscribe(
+        () => {
+          this.generatedCoupon.set({ code: couponCode, amount, brand: brand.name });
+          this.closeCouponModal();
+          this.showCouponResultModal.set(true);
+          this.toastService.success('Coupon created successfully!');
+        },
+        (error) => {
+          this.toastService.error(error.message || 'Failed to create coupon. Please try again.');
+        }
+      );
   }
 
   closeCouponResultModal(): void {
@@ -279,10 +278,39 @@ export class WalletPageComponent implements OnInit, OnDestroy {
   }
 
   copyCouponCode(): void {
+    console.log('Copy coupon clicked');
     const coupon = this.generatedCoupon();
-    if (coupon) {
-      navigator.clipboard.writeText(coupon.code);
-      this.toastService.success('Coupon code copied to clipboard!');
+    console.log('Generated coupon:', coupon);
+    
+    if (!coupon) {
+      console.log('No coupon found');
+      this.toastService.error('No coupon available to copy.');
+      return;
+    }
+    
+    if (!coupon.code) {
+      console.log('Coupon exists but no code');
+      this.toastService.error('Coupon code is empty.');
+      return;
+    }
+
+    console.log('Copying code:', coupon.code);
+    
+    // Try to copy to clipboard
+    try {
+      navigator.clipboard.writeText(coupon.code).then(
+        () => {
+          console.log('Copy successful');
+          this.toastService.success('Coupon code copied to clipboard!');
+        },
+        (err) => {
+          console.error('Clipboard write failed:', err);
+          this.toastService.error('Failed to copy. Please try again.');
+        }
+      );
+    } catch (err) {
+      console.error('Clipboard API error:', err);
+      this.toastService.error('Copy not supported. Please select and copy manually.');
     }
   }
 }

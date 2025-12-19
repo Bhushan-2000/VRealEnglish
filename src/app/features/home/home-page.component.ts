@@ -336,6 +336,23 @@ export class HomePageComponent implements OnInit {
     this.router.navigate(['/courses'], { queryParams: { course: courseId } });
   }
 
+  exploreCourse(): void {
+    console.log('Explore Course button clicked - navigating to /learning');
+    this.router.navigate(['/learning']).then(success => {
+      console.log('Navigation success:', success);
+    }).catch(error => {
+      console.error('Navigation error:', error);
+    });
+  }
+
+  navigateToCommunityGroup(): void {
+    console.log('Navigating to community with group tab');
+    this.router.navigate(['/community'], { queryParams: { tab: 'group' } }).then(
+      success => console.log('Navigation successful:', success),
+      error => console.error('Navigation error:', error)
+    );
+  }
+
   /* =====================================================
      Rolling Number Animation (digit wheel style)
      Looks for elements with [data-roll-target="NNN"] and builds digit columns

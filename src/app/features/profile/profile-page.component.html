@@ -8,8 +8,9 @@
       </button>
       <div class="profile-top">
         <div class="avatar-section">
-          <div class="avatar">
-            <span class="avatar-text">{{ user.name.charAt(0) }}</span>
+          <div class="avatar" [class.has-image]="profileImage">
+            <img *ngIf="profileImage" [src]="profileImage" [alt]="user.name" class="avatar-img">
+            <span *ngIf="!profileImage" class="avatar-text">{{ user.name.charAt(0) }}</span>
           </div>
           <div class="level-badge" [style.background]="getLevelColor()">
             {{ user.level }}

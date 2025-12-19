@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'rooms', loadChildren: () => import('./features/rooms/rooms.module').then(m => m.RoomsModule), canActivate: [AuthGuard] },
   { path: 'ai-coach', loadChildren: () => import('./features/ai-coach/ai-coach.module').then(m => m.AiCoachModule), canActivate: [AuthGuard] },
   { path: 'wallet', loadChildren: () => import('./features/wallet/wallet.module').then(m => m.WalletModule) },
-  { path: 'profile', loadChildren: () => import('./features/profile/profile.module').then(m => m.ProfileModule), canActivate: [AuthGuard] },
+  { path: 'profile', loadChildren: () => import('./features/profile/profile.module').then(m => m.ProfileModule) },
   { path: 'admin', loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule), canActivate: [AdminGuard] },
   { path: '**', loadChildren: () => import('./features/not-found/not-found.module').then(m => m.NotFoundModule) }
 ];

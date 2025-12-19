@@ -1,6 +1,6 @@
 
 export default {
-  basePath: 'https://Bhushan-2000.github.io/VRealEnglish',
+  basePath: '/',
   supportedLocales: {
   "en-US": ""
 },

@@ -124,7 +124,7 @@ export class NavbarComponent {
   }
 
   toggleTheme(): void {
-    this.themeService.toggleTheme();
+    //this.themeService.toggleTheme();
   }
 
   toggleDropdown(label: string, event: Event): void {

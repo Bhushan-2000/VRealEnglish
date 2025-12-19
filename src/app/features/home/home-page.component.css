@@ -105,6 +105,8 @@
   .hero-text {
     padding: 0 1.25rem;
     box-sizing: border-box;
+    text-align: center;
+    margin-left: -19px;
   }
   
   .solution-title {
@@ -177,6 +179,8 @@
   
   .hero-text {
     padding: 0 1rem;
+    text-align: center;
+    margin-left: -19px;
   }
   
   .solution-title {
@@ -677,6 +681,8 @@ section + section:after {
 
 .course-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.97), rgba(252, 253, 254, 0.98));
   border-radius: var(--course-radius);
   padding: 2rem;
@@ -843,6 +849,10 @@ section + section:after {
 
 .meta-item svg {
   color: var(--brand-primary);
+}
+
+.course-card .btn {
+  margin-top: auto;
 }
 
 /* Demo 360 Section */
@@ -1116,6 +1126,7 @@ section + section:after {
     max-width: 100%;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
+    margin-left: -19px;
   }
   
   .solution-title {
@@ -1273,6 +1284,13 @@ section + section:after {
 }
 
 /* Tablet Responsive */
+/* Reset mobile-specific styles for desktop and tablet */
+@media (min-width: 769px) {
+  .hero-text {
+    margin-left: 0;
+  }
+}
+
 @media (min-width: 769px) and (max-width: 1024px) {
   .container {
     padding-left: 2rem;

@@ -17,7 +17,7 @@ export interface WalletState {
 
 @Injectable({ providedIn: 'root' })
 export class WalletService {
-  private walletSubject = new BehaviorSubject<WalletState>({ balance: 0, transactions: [] });
+  walletSubject = new BehaviorSubject<WalletState>({ balance: 0, transactions: [] });
   wallet$ = this.walletSubject.asObservable();
 
   private readonly NON_WITHDRAWABLE_RULE = 'Withdrawals are not allowed. Wallet balance can be used for subscriptions or coupon generation.';
@@ -27,11 +27,11 @@ export class WalletService {
   }
 
   private initializeMockWallet(): void {
+    // Initialize with claimed earnings from practice sessions (₹104.66 total)
     const state: WalletState = {
-      balance: 250,
+      balance: 104.66,
       transactions: [
-        { id: 'tx-1', type: 'credit', amount: 200, description: 'Initial top-up', date: new Date(Date.now() - 86400000).toISOString() },
-        { id: 'tx-2', type: 'debit', amount: 50, description: 'Course enrollment: Interview Simulation', date: new Date().toISOString() }
+        { id: 'tx-1', type: 'credit', amount: 104.66, description: 'Speaking practice earnings (539 hours 0 minutes)', date: new Date(Date.now() - 3600000).toISOString() }
       ]
     };
     this.walletSubject.next(state);

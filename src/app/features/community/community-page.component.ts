@@ -118,7 +118,7 @@ export class CommunityPageComponent implements OnInit, OnDestroy {
 
   // Mock Partners Pool
   private partnersPool: Partner[] = [
-    { id: '1', name: 'Priya Sharma', avatar: 'https://i.pravatar.cc/150?img=47', level: 'Intermediate', country: '🇮🇳 India', gender: 'female' },
+    { id: '1', name: 'Rucha Sharma', avatar: 'https://i.pravatar.cc/150?img=47', level: 'Intermediate', country: '🇮🇳 India', gender: 'female' },
     { id: '2', name: 'Arjun Patel', avatar: 'https://i.pravatar.cc/150?img=12', level: 'Advanced', country: '🇮🇳 India', gender: 'male' },
     { id: '3', name: 'Anjali Reddy', avatar: 'https://i.pravatar.cc/150?img=45', level: 'Basic', country: '🇮🇳 India', gender: 'female' },
     { id: '4', name: 'Rohan Kumar', avatar: 'https://i.pravatar.cc/150?img=13', level: 'Intermediate', country: '🇮🇳 India', gender: 'male' },
@@ -184,7 +184,7 @@ export class CommunityPageComponent implements OnInit, OnDestroy {
       participants: [
         { name: 'You', avatar: 'https://i.pravatar.cc/150?img=33' },
         { name: 'Rajesh', avatar: 'https://i.pravatar.cc/150?img=57' },
-        { name: 'Priya', avatar: 'https://i.pravatar.cc/150?img=44' }
+        { name: 'Rucha', avatar: 'https://i.pravatar.cc/150?img=44' }
       ],
       duration: 2,
       hostName: 'You'
@@ -450,7 +450,7 @@ export class CommunityPageComponent implements OnInit, OnDestroy {
   generateRoomParticipants(room: any): void {
     const indianNames = {
       male: ['Arjun', 'Rohan', 'Vikram', 'Aditya', 'Karan', 'Amit', 'Harish', 'Sanjay', 'Raj', 'Dev'],
-      female: ['Priya', 'Anjali', 'Kavya', 'Sneha', 'Pooja', 'Divya', 'Simran', 'Meera', 'Riya', 'Neha']
+      female: ['Rucha', 'Anjali', 'Kavya', 'Sneha', 'Pooja', 'Divya', 'Simran', 'Meera', 'Riya', 'Neha']
     };
     
     const maleAvatars = [12, 13, 14, 11, 15, 16, 52, 58, 59, 60];
