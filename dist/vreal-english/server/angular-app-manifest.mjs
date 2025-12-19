@@ -2,7 +2,7 @@
 export default {
   bootstrap: () => import('./main.server.mjs').then(m => m.default),
   inlineCriticalCss: true,
-  baseHref: '/',
+  baseHref: 'https://Bhushan-2000.github.io/VRealEnglish/',
   locale: undefined,
   routes: [
   {
@@ -10,42 +10,42 @@ export default {
     "preload": [
       "chunk-GTJU7B3G.js"
     ],
-    "route": "/"
+    "route": "/VRealEnglish"
   },
   {
     "renderMode": 1,
     "preload": [
       "chunk-BAO4BWVV.js"
     ],
-    "route": "/courses"
+    "route": "/VRealEnglish/courses"
   },
   {
     "renderMode": 1,
     "preload": [
       "chunk-ETH52TJO.js"
     ],
-    "route": "/module360"
+    "route": "/VRealEnglish/module360"
   },
   {
     "renderMode": 1,
     "preload": [
       "chunk-MD75PS4Q.js"
     ],
-    "route": "/live"
+    "route": "/VRealEnglish/live"
   },
   {
     "renderMode": 1,
     "preload": [
       "chunk-AFRU3EOU.js"
     ],
-    "route": "/learning"
+    "route": "/VRealEnglish/learning"
   },
   {
     "renderMode": 1,
     "preload": [
       "chunk-AFRU3EOU.js"
     ],
-    "route": "/learning/*"
+    "route": "/VRealEnglish/learning/*"
   },
   {
     "renderMode": 1,
@@ -53,21 +53,21 @@ export default {
       "chunk-Z7NLG3CO.js",
       "chunk-VKL2DIP3.js"
     ],
-    "route": "/community"
+    "route": "/VRealEnglish/community"
   },
   {
     "renderMode": 1,
     "preload": [
       "chunk-7ANV22NZ.js"
     ],
-    "route": "/rooms"
+    "route": "/VRealEnglish/rooms"
   },
   {
     "renderMode": 1,
     "preload": [
       "chunk-5IDYPNZ6.js"
     ],
-    "route": "/ai-coach"
+    "route": "/VRealEnglish/ai-coach"
   },
   {
     "renderMode": 1,
@@ -75,34 +75,34 @@ export default {
       "chunk-RUVS4OGT.js",
       "chunk-VKL2DIP3.js"
     ],
-    "route": "/wallet"
+    "route": "/VRealEnglish/wallet"
   },
   {
     "renderMode": 1,
     "preload": [
       "chunk-WDS77BN6.js"
     ],
-    "route": "/profile"
+    "route": "/VRealEnglish/profile"
   },
   {
     "renderMode": 1,
     "preload": [
       "chunk-DM77GMFG.js"
     ],
-    "route": "/admin"
+    "route": "/VRealEnglish/admin"
   },
   {
     "renderMode": 1,
     "preload": [
       "chunk-SMTZ4B3V.js"
     ],
-    "route": "/**"
+    "route": "/VRealEnglish/**"
   }
 ],
   entryPointToBrowserMapping: undefined,
   assets: {
-    'index.csr.html': {size: 12454, hash: 'e04b797452532ae8559240bc7efe39d59142df4bbd3edb807514b28772de2391', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
-    'index.server.html': {size: 1121, hash: 'b5b9ce621762a4499c7851dfb7a85652d7ec91011a8adf20995ba03c13309642', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
+    'index.csr.html': {size: 12497, hash: '43b095cfdb6d94c32a386c9516045832afecb5f87eb3b6fe0efc66db4e2c3aec', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
+    'index.server.html': {size: 1164, hash: 'be493675306fb54eeacc30e0348e79db39cd23070148782d66c0dc303444074b', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
     'styles-L37CUN52.css': {size: 17492, hash: 'SrrUxHETrPI', text: () => import('./assets-chunks/styles-L37CUN52_css.mjs').then(m => m.default)}
   },
 };
